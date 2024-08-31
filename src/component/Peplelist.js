@@ -1,16 +1,19 @@
-//import React, { useState } from "react";
+import React, { useState } from "react";
 import { peopleData } from "./Pepaledata";
-//import { HiMiniSun } from "react-icons/hi2";
-import { MdDeleteOutline } from "react-icons/md";
-import { MdEdit } from "react-icons/md";
+import { MdDeleteOutline, MdEdit } from "react-icons/md";
 import "./pepalelist.css";
-import { Link } from "react-router-dom";
-//import { CgEditFade } from "react-icons/cg";
 
-//import FontAwesomeIcon from "react-fontawesome";
+function PeopleList() {
+  const [selectedPerson, setSelectedPerson] = useState(null);
+  const [people, setPeople] = useState(peopleData);
 
-function Peplelist() {
-  // const [pepale, setpepale] = useState();
+  const handleLaunchClick = (person) => {
+    setSelectedPerson(person);
+  };
+  const handleDelete = (id) => {
+    const updatePeple = people.filter((Item) => Item.id !== id);
+    setPeople(updatePeple);
+  };
 
   return (
     <div>
@@ -24,51 +27,120 @@ function Peplelist() {
             <th scope="col">Teams</th>
           </tr>
         </thead>
-        {peopleData.map((ele) => {
-          const status = ele.isActive ? "Active" : "inactive";
-          return (
-            <tbody>
-              <tr>
-                <th scope="row">
-                  <img
-                    src={ele.image}
-                    style={{
-                      hight: "20px",
-                      width: "30px",
-                      borderRadius: "30px",
-                    }}
-                    alt="img"
-                  />{" "}
-                  {}
-                  {}
-                  {ele.fName}.{ele.lName}
-                </th>
-                <td>{status}</td>
-                <td>{ele.role}</td>
-                <td>{ele.email}</td>
-                <td>{ele.teams}</td>
-                <td>
-                  <Link
-                    className="btn btn-success"
-                    to={`/PepaleDetails/${ele.id}`}
-                    key={ele.id}
+        <tbody>
+          {people.map((ele) => {
+            const status = ele.isActive ? "Active" : "Inactive";
+            return (
+              <>
+                <tr key={ele.id}>
+                  <th scope="row">
+                    <img
+                      src={ele.image}
+                      style={{
+                        height: "20px",
+                        width: "30px",
+                        borderRadius: "30px",
+                      }}
+                      alt="img"
+                    />{" "}
+                    {ele.fName} {ele.lName}
+                  </th>
+
+                  <td>{status}</td>
+                  <td>{ele.role}</td>
+                  <td>{ele.email}</td>
+                  <td
+                    data-toggle="modal"
+                    data-target="#exampleModalCenter"
+                    onClick={() => handleLaunchClick(ele)}
                   >
-                    DETAILS
-                  </Link>
-                  <button className="btn btn-danger delete">
-                    <MdDeleteOutline />
-                  </button>
-                  <button className="btn btn-warning edit">
-                    <MdEdit />
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          );
-        })}
+                    {ele.teams.map((team, index) => (
+                      <button key={index} className="btn btn-success mr-2 my-2">
+                        {team}
+                      </button>
+                    ))}
+                  </td>
+
+                  <td>
+                    <button
+                      className="btn btn-danger delete"
+                      onClick={() => handleDelete(ele.id)}
+                    >
+                      <MdDeleteOutline />
+                    </button>
+                    <button className="btn btn-warning edit">
+                      <MdEdit />
+                    </button>
+                  </td>
+                </tr>
+              </>
+            );
+          })}
+        </tbody>
       </table>
+
+      {/* Modal */}
+      <div
+        className="modal fade"
+        id="exampleModalCenter"
+        tabIndex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalCenterTitle">
+                {selectedPerson
+                  ? `${selectedPerson.fName} ${selectedPerson.lName}`
+                  : "Modal title"}
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              {selectedPerson && (
+                <div>
+                  <p>
+                    <strong>Status:</strong>{" "}
+                    {selectedPerson.isActive ? "Active" : "Inactive"}
+                  </p>
+                  <p>
+                    <strong>Role:</strong> {selectedPerson.role}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {selectedPerson.email}
+                  </p>
+                  <p>
+                    <strong>Teams:</strong> {selectedPerson.teams.join(", ")}
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" className="btn btn-primary">
+                Save changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-export default Peplelist;
+export default PeopleList;

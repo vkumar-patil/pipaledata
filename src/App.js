@@ -7,8 +7,8 @@ import { Routes, Route } from "react-router-dom";
 function App() {
   return (
     <>
+      <Peplelist />
       <Routes>
-        <Route path="/" element={<Peplelist />}></Route>
         <Route path="/PepaleDetails/:id" element={<PepaleDetails />}></Route>
       </Routes>
     </>
