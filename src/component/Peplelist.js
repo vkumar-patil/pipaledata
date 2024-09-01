@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { peopleData } from "./Pepaledata";
 import { MdDeleteOutline, MdEdit } from "react-icons/md";
 import "./pepalelist.css";
+import Navbar from "./Navbar";
 
 function PeopleList() {
   const [selectedPerson, setSelectedPerson] = useState(null);
@@ -19,7 +20,8 @@ function PeopleList() {
   };
 
   return (
-    <div style={{ margin: "0%", padding: "0%", width: "1130px" }}>
+    <div style={{ margin: "0%", padding: "0%", width: "1100px" }}>
+      <Navbar />
       <table className="table table-hover">
         <thead>
           <tr>
@@ -43,10 +45,9 @@ function PeopleList() {
                         height: "30px",
                         width: "30px",
                         borderRadius: "30px",
-                        marginRight:"2px"
+                        marginRight: "2px",
                       }}
                       alt="img"
-                      
                     />{" "}
                     {ele.fName} {ele.lName}
                   </th>

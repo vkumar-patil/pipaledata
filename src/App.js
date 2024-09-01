@@ -3,34 +3,34 @@ import "./App.css";
 import Peplelist from "./component/Peplelist";
 import PepaleDetails from "./component/PepaleDetails";
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./component/Navbar";
+//import Navbar from "./component/Navbar";
 import { Link } from "react-router-dom";
+import { ImDelicious } from "react-icons/im";
+import MainNavbar from "./component/MainNavbar";
 function App() {
   return (
     <>
-      <Navbar />
-      <div
-        className="sidebar "
-        style={{ display: "flex", margin: "0%", padding: "0%" }}
-      >
-        <div>
-          <div style={{ marginTop: "50px" }}>
-            <Link to={"/PepaleDetails"}>
-              <p>Overview</p>
-            </Link>
-          </div>
-          <div style={{ marginTop: "30px" }}>
-            <Link to={"/Peplelist"}>
-              <p>People Directory</p>
-            </Link>
-          </div>
+      <MainNavbar />
+      <div style={{ display: "flex", margin: "0%", padding: "0%" }}>
+        <div className="sidebar ">
+          <Link to={"/PepaleDetails"}>
+            <p style={{marginTop:"50px"}}>
+              <ImDelicious />
+              Overview
+            </p>
+          </Link>
+          <Link to={"/Peplelist"}>
+            <p>
+              <ImDelicious />
+              People-Directory
+            </p>
+          </Link>
         </div>
-        <div style={{ marginLeft: "40px", width: "800px" }}>
+        <div style={{ width: "800px" }}>
           <Routes>
             <Route path="/Peplelist" element={<Peplelist />}></Route>
             <Route path="/PepaleDetails" element={<PepaleDetails />}></Route>
           </Routes>
-          {/* {<PepaleDetails />?<PepaleDetails />: <Peplelist />} */}
         </div>
       </div>
     </>
