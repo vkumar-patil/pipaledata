@@ -27,7 +27,7 @@ export const peopleData = [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/John_Doe%2C_born_John_Nommensen_Duchac.jpg/1200px-John_Doe%2C_born_John_Nommensen_Duchac.jpg",
     isActive: true,
     role: "Product Manager",
-    teams: ["Design", "Product", "Marketing", "Fullstack Developer"],
+    teams: ["Design", "Product", "Marketing"],
   },
   {
     id: "3",
@@ -41,7 +41,7 @@ export const peopleData = [
     image: "https://randomuser.me/api/portraits/women/44.jpg",
     isActive: true,
     role: "Software Engineer",
-    teams: ["Development",   "QA"],
+    teams: ["Development", "QA", "Fullstack Developer"],
   },
   {
     id: "4",

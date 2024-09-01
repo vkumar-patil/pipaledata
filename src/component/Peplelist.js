@@ -11,12 +11,15 @@ function PeopleList() {
     setSelectedPerson(person);
   };
   const handleDelete = (id) => {
-    const updatePeple = people.filter((Item) => Item.id !== id);
-    setPeople(updatePeple);
+    const isConfirm = window.confirm("Are you sure you want to delete?");
+    if (isConfirm) {
+      const updatePeple = people.filter((Item) => Item.id !== id);
+      setPeople(updatePeple);
+    }
   };
 
   return (
-    <div>
+    <div style={{ margin: "0%", padding: "0%", width: "1130px" }}>
       <table className="table table-hover">
         <thead>
           <tr>
@@ -37,11 +40,13 @@ function PeopleList() {
                     <img
                       src={ele.image}
                       style={{
-                        height: "20px",
+                        height: "30px",
                         width: "30px",
                         borderRadius: "30px",
+                        marginRight:"2px"
                       }}
                       alt="img"
+                      
                     />{" "}
                     {ele.fName} {ele.lName}
                   </th>
@@ -68,6 +73,8 @@ function PeopleList() {
                     >
                       <MdDeleteOutline />
                     </button>
+                  </td>
+                  <td>
                     <button className="btn btn-warning edit">
                       <MdEdit />
                     </button>
