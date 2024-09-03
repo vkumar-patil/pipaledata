@@ -1,5 +1,4 @@
 import React from "react";
-//import { VscAccount } from "react-icons/vsc";
 import { IoIosNotifications } from "react-icons/io";
 import logo from "./loger.png";
 function MainNavbar() {
@@ -18,12 +17,12 @@ function MainNavbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
-          <a className="navbar-brand" href="#">
+          <a className="navbar-brand" href="/">
             PEOPLE.COM
           </a>
           <ul className="navbar-nav mr-auto mt-2 mt-lg-0"></ul>
           <form className="form-inline my-2 my-lg-0">
-            <span style={{fontSize:"x-large"}}>
+            <span style={{ fontSize: "x-large" }}>
               <IoIosNotifications />
             </span>
             <img
@@ -32,9 +31,6 @@ function MainNavbar() {
               style={{ height: "50px", borderRadius: "40%" }}
             />
             <p>Vpatil</p>
-            {/* <button className="btn btn-outline-success my-2 my-sm-0">
-              <VscAccount />
-            </button> */}
           </form>
         </div>
       </nav>

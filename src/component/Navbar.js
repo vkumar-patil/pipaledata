@@ -1,12 +1,11 @@
 import React from "react";
 import "./Navbar.css";
-//import { Link } from "react-router-dom";
 import { FaFilter } from "react-icons/fa";
 function Navbar() {
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <a className="navbar-brand" href="#">
+        <a className="navbar-brand" href="/">
           Team members
         </a>
         <button
@@ -38,7 +37,8 @@ function Navbar() {
             />
             <button
               className="btn btn-outline-success my-2 my-sm-0"
-              type="submit" style={{marginRight:"2px"}}
+              type="submit"
+              style={{ marginRight: "2px" }}
             >
               Search
             </button>

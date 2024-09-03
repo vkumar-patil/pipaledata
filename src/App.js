@@ -11,8 +11,8 @@ function App() {
   return (
     <>
       <MainNavbar />
-      <div style={{ display: "flex", margin: "0%", padding: "0%" }}>
-        <div className="sidebar ">
+      <div style={{ display: "flex", margin: "0%", padding: "0%", }}>
+        <div className="sidebar " style={{backgroundColor:"azure"}}>
           <Link to={"/PepaleDetails"}>
             <p style={{marginTop:"50px"}}>
               <ImDelicious />
