@@ -8,6 +8,8 @@ function PeopleList() {
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [people, setPeople] = useState(peopleData);
   const [serchterm, searchTerm] = useState("");
+  //const [filterd, setFilterd] = useState([]);
+
   const handleLaunchClick = (person) => {
     setSelectedPerson(person);
   };
@@ -58,7 +60,7 @@ function PeopleList() {
                 value={serchterm}
                 onChange={(e) => searchTerm(e.target.value)}
               />
-              <button className="filter">
+              <button className="filter" onClick={handlefilter}>
                 filter <FaFilter />
               </button>
               <button className="btn btn-primary mr-auto">+ ADD MEMBER</button>
@@ -81,6 +83,9 @@ function PeopleList() {
           <tbody>
             {filteredPeople.map((ele) => {
               const status = ele.isActive ? "Active" : "Inactive";
+              const filterdteams = ele.teams.filter((team) =>
+                team.includes("sname")
+              );
               return (
                 <>
                   <tr key={ele.id}>
@@ -106,7 +111,7 @@ function PeopleList() {
                       data-target="#exampleModalCenter"
                       onClick={() => handleLaunchClick(ele)}
                     >
-                      {ele.teams.map((team, index) => (
+                      {filterdteams.map((team, index) => (
                         <button
                           key={index}
                           className="btn btn-success mr-2 my-2"
