@@ -1,210 +1,342 @@
 import React, { useState } from "react";
 import { peopleData } from "./Pepaledata";
 import { MdDeleteOutline, MdEdit } from "react-icons/md";
-import "./pepalelist.css";
 import { FaFilter } from "react-icons/fa";
-
+import "./pepalelist.css";
+import AddMember from "./Addmember";
 function PeopleList() {
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [people, setPeople] = useState(peopleData);
-  const [serchterm, searchTerm] = useState("");
-  //const [filterd, setFilterd] = useState([]);
+  const [editPerson, setEditPerson] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTeams, setSelectedTeams] = useState(new Set());
+  const [dropdownOpen, setDropdownOpen] = useState(false); // State to toggle dropdown visibility
+  const [isAddingMember, setIsAddingMember] = useState(false);
+  const handleAddMember = (newMember) => {
+    setPeople((prevPeople) => [
+      ...prevPeople,
+      { ...newMember, id: prevPeople.length + 1 }, // Ensure unique ID
+    ]);
+    setIsAddingMember(false); // Close the form
+  };
 
-  const handleLaunchClick = (person) => {
-    setSelectedPerson(person);
+  // Handle checkbox change for team filtering
+  // Handle checkbox change for team filtering
+  const handleTeamFilterChange = (e) => {
+    const team = e.target.value;
+    setSelectedTeams((prev) => {
+      const newSelectedTeams = new Set(prev);
+      if (e.target.checked) {
+        newSelectedTeams.add(team);
+      } else {
+        newSelectedTeams.delete(team);
+      }
+      return newSelectedTeams;
+    });
   };
-  const handleDelete = (id) => {
-    const isConfirm = window.confirm("Are you sure you want to delete?");
-    if (isConfirm) {
-      const updatePeple = people.filter((Item) => Item.id !== id);
-      setPeople(updatePeple);
-    }
+
+  // Filter people based on search term and selected teams
+  const filteredPeople = people.filter((person) => {
+    const matchesSearch = person.fName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesTeams =
+      !selectedTeams.size ||
+      person.teams.some((team) => selectedTeams.has(team));
+    return matchesSearch && matchesTeams;
+  });
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditPerson((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
-  const filteredPeople = people.filter((person) =>
-    person.fName.toLowerCase().includes(serchterm.toLowerCase())
+  const handleSaveEdit = () => {
+    setPeople((prevPeople) =>
+      prevPeople.map((p) => (p.id === editPerson.id ? editPerson : p))
+    );
+    setEditPerson(null); // Close the form after saving
+  };
+  // Get unique teams for filter checkboxes
+  const uniqueTeams = Array.from(
+    new Set(people.flatMap((person) => person.teams))
   );
 
   return (
     <>
-      <div>
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarTogglerDemo01"
+          aria-controls="navbarTogglerDemo01"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
           <a className="navbar-brand" href="/">
             Team members
           </a>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
 
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item active">
-                <button className="nav-link" style={{ borderRadius: "100px" }}>
-                  100 users
-                </button>
-              </li>
-            </ul>
-            <form className="form-inline my-2 my-lg-0">
-              <input
-                className="form-control  mr-sm-2"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-                value={serchterm}
-                onChange={(e) => searchTerm(e.target.value)}
-              />
-              {people.map((team) => {
-                return (
-                  <input type="checkbox" name={team.teams} value={team.teams} className="filter" />
-                );
-              })}
-              filter <FaFilter />
-              {/* </input> */}
-              <button className="btn btn-primary mr-auto">+ ADD MEMBER</button>
-            </form>
-          </div>
-        </nav>
-      </div>
-      <div style={{ margin: "0%", padding: "0%", width: "1100px" }}>
-        {/* <Navbar /> */}
+          <form className="form-inline my-2 my-lg-0">
+            <input
+              className="form-control mr-sm-2"
+              type="search"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <div className="dropdown ml-2">
+              <button
+                className="btn btn-outline-secondary dropdown-toggle"
+                type="button"
+                id="filterDropdown"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                Filter <FaFilter />
+              </button>
+              {dropdownOpen && (
+                <div
+                  className="dropdown-menu show"
+                  aria-labelledby="filterDropdown"
+                >
+                  {uniqueTeams.map((team) => (
+                    <div key={team} className="form-check">
+                      <input
+                        type="checkbox"
+                        value={team}
+                        onChange={handleTeamFilterChange}
+                        checked={selectedTeams.has(team)}
+                        className="form-check-input"
+                        id={`filter-${team}`}
+                      />
+                      <label
+                        htmlFor={`filter-${team}`}
+                        className="form-check-label"
+                      >
+                        {team}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <button
+              className="btn btn-primary ml-2"
+              onClick={(e) => {
+                e.preventDefault(); // Prevent default button behavior
+                setIsAddingMember(true);
+              }}
+            >
+              + ADD MEMBER
+            </button>
+          </form>
+        </div>
+      </nav>
+
+      <div className="people-list-container">
         <table className="table table-hover">
           <thead>
             <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Status</th>
-              <th scope="col">Role</th>
-              <th scope="col">Email address</th>
-              <th scope="col">Teams</th>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Role</th>
+              <th>Email</th>
+              <th>Teams</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredPeople.map((ele) => {
-              const status = ele.isActive ? "Active" : "Inactive";
-              const filterdteams = ele.teams.filter((team) =>
-                team.includes("sname")
-              );
-              return (
-                <>
-                  <tr key={ele.id}>
-                    <th scope="row">
-                      <img
-                        src={ele.image}
-                        style={{
-                          height: "30px",
-                          width: "30px",
-                          borderRadius: "30px",
-                          marginRight: "2px",
-                        }}
-                        alt="img"
-                      />{" "}
-                      {ele.fName} {ele.lName}
-                    </th>
+            {filteredPeople.map((person) => (
+              <tr key={person.id}>
+                <td onClick={() => setSelectedPerson(person)}>
+                  <img
+                    src={person.image}
+                    alt="profile"
+                    style={{ height: "60px", borderRadius: "50px" }}
+                  />{" "}
+                  {person.fName} {person.lName}
+                </td>
+                <td onClick={() => setSelectedPerson(person)}>
+                  {person.isActive ? "Active" : "Inactive"}
+                </td>
+                <td onClick={() => setSelectedPerson(person)}>{person.role}</td>
+                <td onClick={() => setSelectedPerson(person)}>
+                  {person.email}
+                </td>
 
-                    <td>{status}</td>
-                    <td>{ele.role}</td>
-                    <td>{ele.email}</td>
-                    <td
-                      data-toggle="modal"
-                      data-target="#exampleModalCenter"
-                      onClick={() => handleLaunchClick(ele)}
-                    >
-                      {filterdteams.map((team, index) => (
-                        <button
-                          key={index}
-                          className="btn btn-success mr-2 my-2"
-                        >
-                          {team}
-                        </button>
-                      ))}
-                    </td>
-
-                    <td>
-                      <button
-                        className="btn btn-danger delete"
-                        onClick={() => handleDelete(ele.id)}
-                      >
-                        <MdDeleteOutline />
-                      </button>
-                    </td>
-                    <td>
-                      <button className="btn btn-warning edit">
-                        <MdEdit />
-                      </button>
-                    </td>
-                  </tr>
-                </>
-              );
-            })}
+                <td onClick={() => setSelectedPerson(person)}>
+                  {person.teams.map((team, index) => (
+                    <span key={index} className="badge badge-success mr-1">
+                      {team}
+                    </span>
+                  ))}
+                </td>
+                <td>
+                  <button
+                    className="btn btn-danger mr-2"
+                    onClick={() => {
+                      if (window.confirm("Are you sure?"))
+                        setPeople(people.filter((p) => p.id !== person.id));
+                    }}
+                  >
+                    <MdDeleteOutline />
+                  </button>
+                  <button
+                    className="btn btn-warning "
+                    onClick={() => setEditPerson(person)}
+                  >
+                    <MdEdit />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
+        {isAddingMember && (
+          <AddMember
+            onAdd={handleAddMember}
+            onCancel={() => setIsAddingMember(false)}
+            teams={uniqueTeams}
+          />
+        )}
 
-        {/* Modal */}
-        <div
-          className="modal fade"
-          id="exampleModalCenter"
-          tabIndex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalCenterTitle"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-centered" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalCenterTitle">
-                  {selectedPerson
-                    ? `${selectedPerson.fName} ${selectedPerson.lName}`
-                    : "Modal title"}
-                </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                {selectedPerson && (
-                  <div>
-                    <p>
-                      <strong>Status:</strong>{" "}
-                      {selectedPerson.isActive ? "Active" : "Inactive"}
-                    </p>
-                    <p>
-                      <strong>Role:</strong> {selectedPerson.role}
-                    </p>
-                    <p>
-                      <strong>Email:</strong> {selectedPerson.email}
-                    </p>
-                    <p>
-                      <strong>Teams:</strong> {selectedPerson.teams.join(", ")}
-                    </p>
-                  </div>
-                )}
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="button" className="btn btn-primary">
-                  Save changes
-                </button>
+        {selectedPerson && (
+          <div className="modal show" style={{ display: "block" }}>
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">
+                    {selectedPerson.fName} {selectedPerson.lName}
+                  </h5>
+                  <button
+                    type="button"
+                    className="close"
+                    onClick={() => setSelectedPerson(null)}
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <p>
+                    Status: {selectedPerson.isActive ? "Active" : "Inactive"}
+                  </p>
+                  <p>Role: {selectedPerson.role}</p>
+                  <p>Email: {selectedPerson.email}</p>
+                  <p>Teams: {selectedPerson.teams.join(", ")}</p>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setSelectedPerson(null)}
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+        {editPerson && (
+          <div className="modal show" style={{ display: "block" }}>
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">
+                    Edit {editPerson.fName} {editPerson.lName}
+                  </h5>
+                  <button
+                    type="button"
+                    className="close"
+                    onClick={() => setEditPerson(null)}
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <form>
+                    <div className="form-group">
+                      <label>First Name</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="fName"
+                        value={editPerson.fName}
+                        onChange={handleEditChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Last Name</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="lName"
+                        value={editPerson.lName}
+                        onChange={handleEditChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Role</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="role"
+                        value={editPerson.role}
+                        onChange={handleEditChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Email</label>
+                      <input
+                        type="email"
+                        className="form-control"
+                        name="email"
+                        value={editPerson.email}
+                        onChange={handleEditChange}
+                      />
+                    </div>
+                    {/* <div className="form-group">
+                      <label>Teams</label>
+                      {uniqueTeams.map((team) => (
+                        <div key={team} className="form-check">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            checked={editPerson.teams.includes(team)}
+                            onChange={() => handleEditTeamsChange(team)}
+                          />
+                          <label className="form-check-label">{team}</label>
+                        </div>
+                      ))}
+                    </div> */}
+                  </form>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setEditPerson(null)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={handleSaveEdit} // Save the updated data
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

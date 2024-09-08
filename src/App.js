@@ -26,7 +26,7 @@ function App() {
             </p>
           </Link>
         </div>
-        <div style={{ width: "800px" }}>
+        <div className="maindata maindata-expand-lg" >
           <Routes>
             <Route path="/Peplelist" element={<Peplelist />}></Route>
             <Route path="/PepaleDetails" element={<PepaleDetails />}></Route>
