@@ -60,9 +60,13 @@ function PeopleList() {
                 value={serchterm}
                 onChange={(e) => searchTerm(e.target.value)}
               />
-              <button className="filter" onClick={handlefilter}>
-                filter <FaFilter />
-              </button>
+              {people.map((team) => {
+                return (
+                  <input type="checkbox" name={team.teams} value={team.teams} className="filter" />
+                );
+              })}
+              filter <FaFilter />
+              {/* </input> */}
               <button className="btn btn-primary mr-auto">+ ADD MEMBER</button>
             </form>
           </div>
