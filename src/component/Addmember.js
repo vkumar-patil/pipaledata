@@ -41,7 +41,7 @@ function AddMember({ onAdd, onCancel, teams }) {
   };
 
   return (
-    <div className="modal show" style={{ display: "block"}} >
+    <div className="modal show" style={{ display: "block", overflow:"scroll"}} >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
