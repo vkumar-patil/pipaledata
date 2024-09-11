@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { peopleData } from "./Pepaledata";
+import { peopleData } from "./Peopaledata";
 import { MdDeleteOutline, MdEdit } from "react-icons/md";
 import { FaFilter } from "react-icons/fa";
 import "./pepalelist.css";
